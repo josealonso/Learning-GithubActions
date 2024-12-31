@@ -33,7 +33,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: dorny/paths-filter@v3
-        id: changes
+        id: filter
         with:
           filters: |
             src:
@@ -53,11 +53,12 @@ jobs:
 
   compile:
     name: Compile modified Java files
+    needs: detect-modified-files
+    if: ${{ needs.detect-modified-files.outputs.src == 'true' }}
     runs-on: ubuntu-22.04
     steps:
-      # - uses: actions/checkout@v4
-      - name: Check if the test compile cleanly with starter sources
-        if: steps.changes.outputs.src == 'true'
+      - uses: actions/checkout@v4
+      # - name: Check if the test compile cleanly with starter sources
         run: ./gradlew compileStarterTestJava --continue
         working-directory: exercises
 
