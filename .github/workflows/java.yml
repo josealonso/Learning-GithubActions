@@ -20,7 +20,7 @@ jobs:
           ref: main
 
       - name: Validate Gradle wrapper
-        uses: gradle/wrapper-validation-action@v3
+        uses: gradle/actions/wrapper-validation@v3
 
       - name: Set up JDK
         uses: actions/setup-java@v4
@@ -28,7 +28,7 @@ jobs:
           java-version: 17
           distribution: "temurin"
 
-  changes:
+  detect-modified-files:
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
@@ -59,11 +59,8 @@ jobs:
       - name: Compile modified Java files
         if: steps.changes.outputs.java == 'true'
         working-directory: exercises
-        run: |
-          for file in ${{ steps.changes.outputs.java_files }}; do
-            exercise=$(echo "$file" | sed -E 's/exercises\/(.*)\/.*\.java/\1/')
-            ./gradlew ":${exercise}:compileStarterTestJava" --continue
-          done
+        run:
+          ./gradlew compileStarterTestJava --continue
 
   lint:
     name: Lint modified Java files using Checkstyle
