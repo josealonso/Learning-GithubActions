@@ -45,15 +45,29 @@ jobs:
               - '**/*.java'
 
   compile:
-    name: Compile modified Java files
-    needs: detect-modified-files
-    if: ${{ needs.detect-modified-files.outputs.src == 'true' }}
-    runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v4
-      - name: Check if the tests compile cleanly with starter sources
-        run: ./gradlew compileStarterTestJava --continue
-        working-directory: exercises
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up JDK
+      uses: actions/setup-java@v4
+      with:
+        java-version: 17
+        distribution: "temurin"
+
+    - name: Compile modified Java files
+      run: ./gradlew compileStarterTestJava --continue
+      working-directory: exercises
+
+    #    name: Compile modified Java files
+    #    needs: detect-modified-files
+    #    if: ${{ needs.detect-modified-files.outputs.src == 'true' }}
+    #    runs-on: ubuntu-22.04
+    #    steps:
+    #      - uses: actions/checkout@v4
+    #      - name: Check if the tests compile cleanly with starter sources
+    #        run: ./gradlew compileStarterTestJava --continue
+    #        working-directory: exercises
 
   lint:
     name: Lint modified Java files using Checkstyle
