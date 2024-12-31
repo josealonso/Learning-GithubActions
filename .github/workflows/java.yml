@@ -28,8 +28,8 @@ jobs:
           java-version: 17
           distribution: "temurin"
 
-      - name: Run gradle tasks only for modified files/exercises    
-        uses: dorny/paths-filter@v3
+      - name: Check for file changes
+        uses: dorny/paths-filter@v3  # https://github.com/dorny/paths-filter
         id: changes
         with:
           filters: |
@@ -38,6 +38,7 @@ jobs:
 
       - name: Check if modified tests compile cleanly with starter sources
         if: steps.changes.outputs.java == 'true'
+        working-directory: exercises
         run: | 
           for file in ${{ steps.changes.outputs.java_files }}; do
             # Extract the exercise name from the file path
@@ -48,17 +49,28 @@ jobs:
             ./gradlew ":${exercise}:test"
           done
 
-  lint:
-    name: Lint Java files using Checkstyle
+  compile:
+    name: Compile modified Java files
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
-      - name: Set up JDK 1.17
-        uses: actions/setup-java@8df1039502a15bceb9433410b1a100fbe190c53b
-        with:
-          java-version: 17
-          distribution: "temurin"
+      - name: Compile modified Java files
+        if: steps.changes.outputs.java == 'true'
+        run: ./gradlew compileStarterTestJava --continue
+        working-directory: exercises
+
+  lint:
+    name: Lint modified Java files using Checkstyle
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      ##- name: Set up JDK 1.17
+      ##  uses: actions/setup-java@8df1039502a15bceb9433410b1a100fbe190c53b
+      ##  with:
+      ##      java-version: 17
+      ##      distribution: "temurin"
       - name: Run checkstyle
+        if: steps.changes.outputs.java == 'true'
         run: ./gradlew check --exclude-task test --continue
         working-directory: exercises
 
@@ -68,10 +80,13 @@ jobs:
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
       - name: Test all exercises using java-test-runner
+        if: steps.changes.outputs.java == 'true'
         run: bin/test-with-test-runner
       - name: Archive test results
-        uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882
+        uses: actions/upload-artifact@v4
         with:
           name: test-results
           path: exercises/**/build/results.json
         if: failure()
+        # Artifacts are retained for 90 days by default
+
