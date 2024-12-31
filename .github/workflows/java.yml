@@ -11,7 +11,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  prepare-environment:
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout
@@ -56,11 +56,10 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       # - uses: actions/checkout@v4
-      - name: Compile modified Java files
+      - name: Check if the test compile cleanly with starter sources
         if: steps.changes.outputs.src == 'true'
+        run: ./gradlew compileStarterTestJava --continue
         working-directory: exercises
-        run:
-          ./gradlew compileStarterTestJava --continue
 
   lint:
     name: Lint modified Java files using Checkstyle
