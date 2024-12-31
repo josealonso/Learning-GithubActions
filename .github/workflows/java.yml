@@ -13,16 +13,14 @@ on:
 jobs:
   build:
     runs-on: ubuntu-22.04
+    name: Validate Gradle wrapper and Setup JDK
     steps:
-      - name: Checkout the latest commit on the main branch
         uses: actions/checkout@v4
         with:
           ref: main
 
-      - name: Validate Gradle wrapper
         uses: gradle/wrapper-validation-action@v3
 
-      - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
           java-version: 17
