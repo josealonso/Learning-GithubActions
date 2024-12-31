@@ -33,7 +33,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: dorny/paths-filter@v3
-        id: changes
+        id: filter
         with:
           filters: |
             src:
@@ -53,11 +53,12 @@ jobs:
 
   compile:
     name: Compile modified Java files
+    needs: detect-modified-files
+    if: ${{ needs.detect-modified-files.outputs.src == 'true' }}
     runs-on: ubuntu-22.04
     steps:
       # - uses: actions/checkout@v4
       - name: Check if the test compile cleanly with starter sources
-        if: steps.changes.outputs.src == 'true'
         run: ./gradlew compileStarterTestJava --continue
         working-directory: exercises
 
@@ -65,15 +66,9 @@ jobs:
     name: Lint modified Java files using Checkstyle
     runs-on: ubuntu-22.04
     steps:
-      # - uses: actions/checkout@v4
       - name: Lint modified Java files
         if: steps.changes.outputs.java == 'true'
         working-directory: exercises
-      ##- name: Set up JDK 1.17
-      ##  uses: actions/setup-java@8df1039502a15bceb9433410b1a100fbe190c53b
-      ##  with:
-      ##      java-version: 17
-      ##      distribution: "temurin"
         run: |
           for file in ${{ steps.changes.outputs.java_files }}; do
             exercise=$(echo "$file" | sed -E 's/exercises\/(.*)\/.*\.java/\1/')
