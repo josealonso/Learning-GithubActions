@@ -35,8 +35,9 @@ jobs:
       - uses: dorny/paths-filter@v3
         id: changes
         with:
-          changes: |
-            **/*.java
+          filters: |
+            src:
+              - '**/*.java'
       #      - name: Check if modified tests compile cleanly with starter sources
         # if: steps.changes.outputs.java == 'true'
         # working-directory: exercises
