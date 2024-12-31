@@ -57,7 +57,7 @@ jobs:
     steps:
       # - uses: actions/checkout@v4
       - name: Compile modified Java files
-        if: steps.changes.outputs.java == 'true'
+        if: steps.changes.outputs.src == 'true'
         working-directory: exercises
         run:
           ./gradlew compileStarterTestJava --continue

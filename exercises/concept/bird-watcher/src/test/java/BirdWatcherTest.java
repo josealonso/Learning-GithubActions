@@ -16,12 +16,12 @@ public class BirdWatcherTest {
     private static final int TODAY = 4;
 
     private BirdWatcher birdWatcher;
-    private int lastWeek[] = {DAY1, DAY2, DAY3, DAY4, DAY5, DAY6, TODAY};
+    private int lastWeek[] = { DAY1, DAY2, DAY3, DAY4, DAY5, DAY6, TODAY };
 
     @BeforeEach
     public void setUp() {
         birdWatcher = new BirdWatcher(lastWeek);
-        BirdWatcher birdWatcher2 = new BirdWatcher(lastWeek);
+        // BirdWatcher birdWatcher2 = new BirdWatcher(lastWeek);
     }
 
     @Test
@@ -29,7 +29,7 @@ public class BirdWatcherTest {
     @DisplayName("The getLastWeek method correctly returns last week's counts")
     public void itTestGetLastWeek() {
         assertThat(birdWatcher.getLastWeek())
-            .containsExactly(DAY1, DAY2, DAY3, DAY4, DAY5, DAY6, TODAY);
+                .containsExactly(DAY1, DAY2, DAY3, DAY4, DAY5, DAY6, TODAY);
     }
 
     @Test
@@ -58,10 +58,9 @@ public class BirdWatcherTest {
     @Tag("task:4")
     @DisplayName("The hasDayWithoutBirds method returns false when no day had zero visits")
     public void itShouldNotHaveDaysWithoutBirds() {
-        birdWatcher = new BirdWatcher(new int[]{1, 2, 5, 3, 7, 8, 4});
+        birdWatcher = new BirdWatcher(new int[] { 1, 2, 5, 3, 7, 8, 4 });
         assertThat(birdWatcher.hasDayWithoutBirds()).isFalse();
     }
-
 
     @Test
     @Tag("task:5")
@@ -75,7 +74,7 @@ public class BirdWatcherTest {
     @DisplayName("The getCountForFirstDays method returns overall count when number of days is higher than array size")
     public void itTestGetCountForMoreDaysThanTheArraySize() {
         assertThat(birdWatcher.getCountForFirstDays(10))
-            .isEqualTo(DAY1 + DAY2 + DAY3 + DAY4 + DAY5 + DAY6 + TODAY);
+                .isEqualTo(DAY1 + DAY2 + DAY3 + DAY4 + DAY5 + DAY6 + TODAY);
     }
 
     @Test
@@ -90,7 +89,7 @@ public class BirdWatcherTest {
     @Tag("task:6")
     @DisplayName("The getBusyDays method correctly returns zero in case of no busy days")
     public void itShouldNotHaveBusyDays() {
-        birdWatcher = new BirdWatcher(new int[]{1, 2, 3, 3, 2, 1, 4});
+        birdWatcher = new BirdWatcher(new int[] { 1, 2, 3, 3, 2, 1, 4 });
         assertThat(birdWatcher.getBusyDays()).isEqualTo(0);
     }
 }
