@@ -59,11 +59,8 @@ jobs:
       - name: Compile modified Java files
         if: steps.changes.outputs.java == 'true'
         working-directory: exercises
-        run: |
-          for file in ${{ steps.changes.outputs.java_files }}; do
-            exercise=$(echo "$file" | sed -E 's/exercises\/(.*)\/.*\.java/\1/')
-            ./gradlew ":${exercise}:compileStarterTestJava" --continue
-          done
+        run:
+          ./gradlew compileStarterTestJava --continue
 
   lint:
     name: Lint modified Java files using Checkstyle
