@@ -28,7 +28,7 @@ jobs:
           java-version: 17
           distribution: "temurin"
 
-  changes:
+  detect-modified-files:
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
