@@ -54,7 +54,7 @@ jobs:
     name: Compile modified Java files
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v4
+      # - uses: actions/checkout@v4
         if: steps.changes.outputs.java == 'true'
         working-directory: exercises
         run: |
@@ -67,7 +67,7 @@ jobs:
     name: Lint modified Java files using Checkstyle
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v4
+      # - uses: actions/checkout@v4
         if: steps.changes.outputs.java == 'true'
         working-directory: exercises
       ##- name: Set up JDK 1.17
@@ -85,7 +85,7 @@ jobs:
     name: Test all exercises using java-test-runner
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v4
+      # - uses: actions/checkout@v4
       - name: Test the modified exercise/s using java-test-runner
         if: steps.changes.outputs.java == 'true'
         run: bin/test-with-test-runner
