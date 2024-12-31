@@ -18,6 +18,8 @@ exercises/*/bin
 exercises/*/.classpath
 exercises/*/.project
 exercises/*/.settings/
+exercises/practice/
+exercises/concept/
 resources/exercise-template/bin
 resources/exercise-template/.classpath
 resources/exercise-template/.project
