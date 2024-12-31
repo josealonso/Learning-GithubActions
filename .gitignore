@@ -10,6 +10,8 @@ bin/configlet
 bin/configlet.exe
 /exercises/.nb-gradle/
 **/out
+exercises/practice
+exercises/concept
 exercises/.project
 exercises/.settings/
 exercises/*/bin
