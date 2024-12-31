@@ -43,18 +43,6 @@ jobs:
           filters: |
             src:
               - '**/*.java'
-      #      - name: Check if modified tests compile cleanly with starter sources
-        # if: steps.changes.outputs.java == 'true'
-        # working-directory: exercises
-        # run: | 
-        #  for file in ${{ steps.changes.outputs.java_files }}; do
-            # Extract the exercise name from the file path
-        #    exercise=$(echo "$file" | sed -E 's/exercises\/(.*)\/.*\.java/\1/')
-            # Compile, check and run tests for the modified exercise
-        #    ./gradlew ":${exercise}:compileStarterTestJava" --continue
-        #    ./gradlew ":${exercise}:check" --exclude-task test --continue
-        #    ./gradlew ":${exercise}:test"
-        #  done
 
   compile:
     name: Compile modified Java files
@@ -62,32 +50,31 @@ jobs:
     if: ${{ needs.detect-modified-files.outputs.src == 'true' }}
     runs-on: ubuntu-22.04
     steps:
-      # - uses: actions/checkout@v4
-      - name: Check if the test compile cleanly with starter sources
+      - uses: actions/checkout@v4
+      - name: Check if the tests compile cleanly with starter sources
         run: ./gradlew compileStarterTestJava --continue
         working-directory: exercises
 
   lint:
     name: Lint modified Java files using Checkstyle
+    needs: detect-modified-files
+    if: ${{ needs.detect-modified-files.outputs.src == 'true' }}
     runs-on: ubuntu-22.04
     steps:
       - name: Lint modified Java files
-        if: steps.changes.outputs.java == 'true'
+        run: ./gradlew check --exclude-task test --continue
         working-directory: exercises
-        run: |
-          for file in ${{ steps.changes.outputs.java_files }}; do
-            exercise=$(echo "$file" | sed -E 's/exercises\/(.*)\/.*\.java/\1/')
-            ./gradlew ":${exercise}:check" --exclude-task test --continue
-          done 
 
   test:
     name: Test all exercises using java-test-runner
+    needs: detect-modified-files
+    if: ${{ needs.detect-modified-files.outputs.src == 'true' }}
     runs-on: ubuntu-22.04
     steps:
       # - uses: actions/checkout@v4
       - name: Test the modified exercise/s using java-test-runner
-        if: steps.changes.outputs.java == 'true'
         run: bin/test-with-test-runner
+
       - name: Archive test results
         uses: actions/upload-artifact@v4
         with:
