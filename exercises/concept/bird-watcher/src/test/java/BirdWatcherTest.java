@@ -21,7 +21,7 @@ public class BirdWatcherTest {
     @BeforeEach
     public void setUp() {
         birdWatcher = new BirdWatcher(lastWeek);
-//        BirdWatcher birdWatcher2 = new BirdWatcher(lastWeek);
+        BirdWatcher birdWatcher2 = new BirdWatcher(lastWeek);
     }
 
     @Test
