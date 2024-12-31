@@ -13,14 +13,16 @@ on:
 jobs:
   build:
     runs-on: ubuntu-22.04
-    name: Validate Gradle wrapper and Setup JDK
     steps:
+      - name: Checkout
         uses: actions/checkout@v4
         with:
           ref: main
 
+      - name: Validate Gradle wrapper
         uses: gradle/wrapper-validation-action@v3
 
+      - name: Set up JDK
         uses: actions/setup-java@v4
         with:
           java-version: 17
@@ -53,6 +55,7 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       # - uses: actions/checkout@v4
+      - name: Compile modified Java files
         if: steps.changes.outputs.java == 'true'
         working-directory: exercises
         run: |
@@ -66,6 +69,7 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       # - uses: actions/checkout@v4
+      - name: Lint modified Java files
         if: steps.changes.outputs.java == 'true'
         working-directory: exercises
       ##- name: Set up JDK 1.17
