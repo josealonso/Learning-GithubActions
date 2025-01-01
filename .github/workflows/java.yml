@@ -61,6 +61,9 @@ jobs:
       run: ./gradlew test   # compileTestJava 
       working-directory: exercises
 
+    - name: Lint modified Java files using Checkstyle
+      run: ./gradlew check --exclude-task test --continue
+      working-directory: exercises
     #    name: Compile modified Java files
     #    needs: detect-modified-files
     #    if: ${{ needs.detect-modified-files.outputs.src == 'true' }}
@@ -72,7 +75,7 @@ jobs:
     #        working-directory: exercises
 
   lint:
-    name: Lint modified Java files using Checkstyle
+    name: Lint modified Java files using Checkstyle - not working
     needs: detect-modified-files
     if: ${{ needs.detect-modified-files.outputs.src == 'true' }}
     runs-on: ubuntu-22.04
