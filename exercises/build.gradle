@@ -36,6 +36,23 @@ subprojects {
       validateDistributionUrl = true
     }
 
+    // Task that checks for file modifications.
+    tasks.register('detectChangedFiles') {
+      doLast {
+        project.allprojects { subproject -> 
+          def changedFiles = subproject.fileTree(dir: subproject.projectDir, include: '**/*.java').filter { file -> 
+            file.isFile() && file.lastModified() > subproject.lastModified
+          }
+          if (!changedFiles.empty) {
+            println "WARNING: ${subproject.name} has changed files: ${changedFiles}"
+            changedFiles.each { file -> 
+              println "  ${file.path}"
+            }
+          }
+        }
+      }
+    }
+
     sourceSets {
       // Set the directory containing the reference solution as the default source set. Default
       // compile tasks will now run against this source set.

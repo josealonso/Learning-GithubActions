@@ -44,7 +44,7 @@ jobs:
             src:
               - '**/*.java'
 
-  compile:
+  build:
     runs-on: ubuntu-22.04
     steps:
     - name: Checkout code
@@ -56,14 +56,19 @@ jobs:
         java-version: 17
         distribution: "temurin"
 
-    - name: Compile modified Java files
-        # run: ./gradlew compileStarterTestJava --continue
-      run: ./gradlew test   # compileTestJava 
+    - name: Compile modified Java file/s
+      run: ./gradlew compileStarter --continue
+      working-directory: exercises
+
+    - name: Run all the tests corresponding to the modified exercise/s
+      # run: ./gradlew test   # compileTestJava 
+      run: ./gradlew :concept:lasagna:test   # This works!!
       working-directory: exercises
 
     - name: Lint modified Java files using Checkstyle
       run: ./gradlew check --exclude-task test --continue
       working-directory: exercises
+   
     #    name: Compile modified Java files
     #    needs: detect-modified-files
     #    if: ${{ needs.detect-modified-files.outputs.src == 'true' }}
