@@ -6,7 +6,31 @@
 //
 // This file is never delivered to Exercism users.
 
+project.ext.buildDuration = 0
+
 def generatedTestSourceDir = "build/gen/test/java"
+
+def buildStartTime = 0
+
+gradle.addBuildListener(new BuildAdapter() {
+    
+    void buildStarted(Gradle gradle) {
+        buildStartTime = System.currentTimeMillis()
+    }
+    
+    void buildFinished(BuildResult result) {
+        println "Build started at: $buildStartTime"
+        buildDuration = System.currentTimeMillis() - (Long) (buildStartTime ?: 0)
+        println "Build duration: ${buildDuration} ms"
+    }
+})
+
+// def buildStartTime = project.gradle.services.get(BuildRequestMetaData.class).buildTimeClock.startTime
+def buildDuration = System.currentTimeMillis() - (buildStartTime ?: 0)
+
+gradle.rootProject {
+  ext.buildStartTime = System.currentTimeMillis()
+}
 
 subprojects {
 
@@ -39,18 +63,20 @@ subprojects {
     // Task that checks for file modifications.
     tasks.register('detectChangedFiles') {
       doLast {
+        def changedFiles = []
         project.allprojects { subproject -> 
-          def changedFiles = subproject.fileTree(dir: subproject.projectDir, include: '**/*.java').filter { file -> 
-            file.isFile() && file.lastModified() > subproject.lastModified
+          changedFiles = subproject.fileTree(dir: subproject.projectDir).filter { file -> 
+            file.isFile() && file.lastModified() > gradle.rootProject.buildStartTime
           }
           if (!changedFiles.empty) {
-            println "WARNING: ${subproject.name} has changed files: ${changedFiles}"
+            println "${subproject.name} has changed files: ${changedFiles}"
             changedFiles.each { file -> 
               println "  ${file.path}"
             }
           }
         }
-      }
+
+      } // End of doLast block
     }
 
     sourceSets {
