@@ -57,7 +57,8 @@ jobs:
         distribution: "temurin"
 
     - name: Compile modified Java files
-      run: ./gradlew compileStarterTestJava --continue
+        # run: ./gradlew compileStarterTestJava --continue
+      run: ./gradlew compileTestJava 
       working-directory: exercises
 
     #    name: Compile modified Java files
